@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Performance · Academic Risk Monitor{% endblock %}
+{% block content %}
+<div class="row-between">
+  <h1>Student performance</h1>
+  <form method="get" action="{{ url_for('performance') }}" onsubmit="this.action='{{ url_for('performance') }}/'+this.sid.value">
+    <label class="inline">Student
+      <select name="sid" onchange="location.href='{{ url_for('performance') }}/'+this.value">
+        {% for s in students %}<option value="{{ s.student_id }}" {{ 'selected' if s.student_id == selected }}>{{ s.student_name }}</option>{% endfor %}
+      </select>
+    </label>
+  </form>
+</div>
+
+{% if student %}
+<div class="stats">
+  <div><span class="num">{{ student.percentage if student.percentage is not none else '–' }}%</span> average marks</div>
+  <div><span class="num">{{ grade_for(student.percentage) }}</span> grade</div>
+  <div><span class="num">{{ student.attendance_percentage if student.attendance_percentage is not none else '–' }}%</span> attendance</div>
+  <div class="risk-{{ risk_class(student.risk_level) }}"><span class="num">{{ student.risk_level }}</span></div>
+</div>
+{% if student.recommendation %}
+<p class="note"><strong>Recommendation:</strong> {{ student.recommendation }}</p>
+{% endif %}
+
+<p class="actions">
+  <a class="btn" href="{{ url_for('add_marks', student_id=student.student_id) }}">Add marks</a>
+  <a class="btn" href="{{ url_for('add_attendance', student_id=student.student_id) }}">Add attendance</a>
+</p>
+
+<section class="panel">
+  <h2>{{ student.student_name }} · {{ student.course }}, semester {{ student.semester }}</h2>
+  {% if details %}
+  <div class="scroll"><table>
+    <thead><tr><th>Subject</th><th>Exam</th><th class="r">Marks</th><th class="r">Pass mark</th><th>Result</th><th class="r">Attendance %</th></tr></thead>
+    <tbody>
+    {% for d in details %}
+      <tr>
+        <td>{{ d.subject_name }}</td><td>{{ d.exam_type }}</td>
+        <td class="r">{{ d.marks_obtained|int }}/{{ d.max_marks|int }}</td>
+        <td class="r">{{ d.pass_marks|int }}</td>
+        <td><span class="pill {{ 'low' if d.marks_obtained >= d.pass_marks else 'high' }}">{{ 'Pass' if d.marks_obtained >= d.pass_marks else 'Fail' }}</span></td>
+        <td class="r">{{ d.attendance_pct if d.attendance_pct is not none else '–' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}
+  <p class="empty">No marks recorded for this student yet.</p>
+  {% endif %}
+</section>
+{% else %}
+<p class="empty">No students found. <a href="{{ url_for('add_student') }}">Add a student</a> first.</p>
+{% endif %}
+{% endblock %}

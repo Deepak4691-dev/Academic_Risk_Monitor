@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Risk report · Academic Risk Monitor{% endblock %}
+{% block content %}
+<div class="row-between">
+  <h1>Academic risk report</h1>
+  <form method="post" action="{{ url_for('generate_recommendations') }}">
+    <button class="btn" type="submit">Regenerate recommendations</button>
+  </form>
+</div>
+<p class="note">High risk: marks below 40% and attendance below 75%. Medium risk: one of the two. Recommendations come from the <code>GENERATE_RECOMMENDATIONS</code> procedure.</p>
+
+<section class="panel">
+  {% if rows %}
+  <div class="scroll"><table>
+    <thead><tr><th>Student</th><th class="r">Marks %</th><th class="r">Attendance %</th><th>Risk</th><th>Recommendation</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td><a href="{{ url_for('performance', student_id=r.student_id) }}">{{ r.student_name }}</a></td>
+        <td class="r">{{ r.percentage if r.percentage is not none else '–' }}</td>
+        <td class="r">{{ r.attendance_percentage if r.attendance_percentage is not none else '–' }}</td>
+        <td><span class="pill {{ risk_class(r.risk_level) }}">{{ r.risk_level }}</span></td>
+        <td>{{ r.recommendation or 'None yet. Regenerate recommendations.' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}
+  <p class="empty">No student data to analyse yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

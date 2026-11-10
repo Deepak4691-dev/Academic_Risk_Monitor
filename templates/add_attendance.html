@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Add attendance · Academic Risk Monitor{% endblock %}
+{% block content %}
+<h1>Add attendance</h1>
+<section class="panel narrow">
+  <form method="post">
+    <label>Student
+      <select name="student_id" required>
+        <option value="">Choose a student</option>
+        {% for s in students %}<option value="{{ s.student_id }}" {{ 'selected' if form.get('student_id')|string == s.student_id|string }}>{{ s.student_name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Subject
+      <select name="subject_id" required>
+        <option value="">Choose a subject</option>
+        {% for s in subjects %}<option value="{{ s.subject_id }}" {{ 'selected' if form.get('subject_id')|string == s.subject_id|string }}>{{ s.subject_name }}</option>{% endfor %}
+      </select>
+    </label>
+    <div class="grid2">
+      <label>Total classes <input type="number" name="total_classes" min="1" required value="{{ form.get('total_classes', '') }}"></label>
+      <label>Classes attended <input type="number" name="attended_classes" min="0" required value="{{ form.get('attended_classes', '') }}"></label>
+    </div>
+    <p class="note">Saving again for the same student and subject updates the existing record.</p>
+    <div class="actions">
+      <button class="btn" type="submit">Save attendance</button>
+      <a href="{{ url_for('performance') }}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

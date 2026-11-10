@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Students · Academic Risk Monitor{% endblock %}
+{% block content %}
+<div class="row-between">
+  <h1>Students</h1>
+  <a class="btn" href="{{ url_for('add_student') }}">Add student</a>
+</div>
+<section class="panel">
+  {% if rows %}
+  <div class="scroll"><table>
+    <thead><tr><th class="r">ID</th><th>Name</th><th>Email</th><th>Course</th><th class="r">Sem</th><th>Department</th><th>Admitted</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td class="r">{{ r.student_id }}</td>
+        <td><a href="{{ url_for('performance', student_id=r.student_id) }}">{{ r.student_name }}</a></td>
+        <td>{{ r.email }}</td><td>{{ r.course }}</td><td class="r">{{ r.semester }}</td>
+        <td>{{ r.department }}</td>
+        <td>{{ r.date_of_admission.strftime('%d %b %Y') if r.date_of_admission else '–' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}
+  <p class="empty">No students yet. <a href="{{ url_for('add_student') }}">Add the first student</a>.</p>
+  {% endif %}
+</section>
+{% endblock %}

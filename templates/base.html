@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Academic Risk Monitor{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@600&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="{{ url_for('dashboard') }}">Academic Risk Monitor</a>
+    <nav>
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('students') }}">Students</a>
+      <a href="{{ url_for('performance') }}">Performance</a>
+      <a href="{{ url_for('add_marks') }}">Add marks</a>
+      <a href="{{ url_for('add_attendance') }}">Add attendance</a>
+      <a href="{{ url_for('risk_report') }}">Risk report</a>
+    </nav>
+  </header>
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}<p class="flash {{ cat }}">{{ msg }}</p>{% endfor %}
+    {% endwith %}
+    {% if db_error is defined %}
+      <section class="panel">
+        <h1>Can’t reach the database</h1>
+        <p>Check the values in your <code>.env</code> file against Oracle FreeSQL’s <em>Connect with Python</em> details, then reload.</p>
+        <pre>{{ db_error }}</pre>
+      </section>
+    {% else %}
+      {% block content %}{% endblock %}
+    {% endif %}
+  </main>
+</body>
+</html>

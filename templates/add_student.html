@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Add student · Academic Risk Monitor{% endblock %}
+{% block content %}
+<h1>Add student</h1>
+<section class="panel narrow">
+  <form method="post">
+    <label>Full name <input name="student_name" required value="{{ form.get('student_name', '') }}"></label>
+    <label>Email <input type="email" name="email" required value="{{ form.get('email', '') }}"></label>
+    <div class="grid2">
+      <label>Course <input name="course" required value="{{ form.get('course', 'MCA') }}"></label>
+      <label>Semester <input type="number" name="semester" min="1" max="12" required value="{{ form.get('semester', 1) }}"></label>
+    </div>
+    <label>Department <input name="department" required value="{{ form.get('department', 'Computer Applications') }}"></label>
+    <label>Date of admission <input type="date" name="date_of_admission" required value="{{ form.get('date_of_admission', '') }}"></label>
+    <div class="actions">
+      <button class="btn" type="submit">Save student</button>
+      <a href="{{ url_for('students') }}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
